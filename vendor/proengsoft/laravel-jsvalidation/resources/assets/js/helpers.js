@@ -183,10 +183,6 @@ $.extend(true, laravelValidation, {
             var timeValue = false;
             var fmt = new DateFormatter();
 
-            if (typeof value === 'number' && typeof format === 'undefined') {
-                return value;
-            }
-
             if (typeof format === 'object') {
                 var dateRule = this.getLaravelValidation('DateFormat', format);
                 if (dateRule !== undefined) {
@@ -200,10 +196,8 @@ $.extend(true, laravelValidation, {
                 timeValue = this.strtotime(value);
             } else {
                 timeValue = fmt.parseDate(value, format);
-                if (timeValue instanceof Date && fmt.formatDate(timeValue, format) === value) {
+                if (timeValue) {
                     timeValue = Math.round((timeValue.getTime() / 1000));
-                } else {
-                    timeValue = false;
                 }
             }
 
@@ -222,9 +216,9 @@ $.extend(true, laravelValidation, {
          */
         compareDates: function (validator, value, element, params, operator) {
 
-            var timeCompare = this.parseTime(params);
+            var timeCompare = parseFloat(params);
 
-            if (!timeCompare) {
+            if (isNaN(timeCompare)) {
                 var target = this.dependentElement(validator, element, params);
                 if (target === undefined) {
                     return false;
@@ -405,13 +399,22 @@ $.extend(true, laravelValidation, {
          * @param name
          * @returns {RegExp}
          */
-        regexFromWildcard: function (name) {
-            var nameParts = name.split('[*]');
-            if (nameParts.length === 1) nameParts.push('');
+        regexFromWildcard: function(name) {
+            var nameParts = name.split("[*]");
+            if (nameParts.length === 1) {
+                nameParts.push('');
+            }
+            var regexpParts = nameParts.map(function(currentValue, index) {
+                if (index % 2 === 0) {
+                    currentValue = currentValue + '[';
+                } else {
+                    currentValue = ']' +currentValue;
+                }
 
-            return new RegExp('^' + nameParts.map(function(x) {
-                return laravelValidation.helpers.escapeRegExp(x)
-            }).join('\\[[^\\]]*\\]') + '$');
+                return laravelValidation.helpers.escapeRegExp(currentValue);
+            });
+
+            return new RegExp('^'+regexpParts.join('[^\\]]*')+'$');
         },
 
         /**
@@ -513,23 +516,6 @@ $.extend(true, laravelValidation, {
             }
 
             return $(null);
-        },
-
-        /**
-         * If it's an array element, get all values.
-         *
-         * @param validator
-         * @param element
-         * @returns {*|string}
-         */
-        allElementValues: function (validator, element) {
-            if (element.name.indexOf('[]') !== -1) {
-                return validator.findByName(element.name).map(function (i, e) {
-                    return validator.elementValue(e);
-                }).get();
-            }
-
-            return validator.elementValue(element);
         }
     }
 });

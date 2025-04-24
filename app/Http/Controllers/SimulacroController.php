@@ -20,169 +20,142 @@ class SimulacroController extends Controller
         return view('eventos.simulacro', $conteos);
     }
 
-    public function registroSimulacro(Request $request){
+    public function registroSimulacro(Request $request)
+    {
+        Log::info('Iniciando proceso de registro de simulacro');
+
         $inicioMes = Carbon::now()->startOfMonth();
         $finMes = Carbon::now()->endOfMonth();
-
         $datos_evento = $request->datos_evento;
 
-        // Verifica si el empleado existe
-        $AsistenciaE = Tbl_Empleado_SIA::where(function ($query) use ($datos_evento) {
-            if (strlen($datos_evento) == 10) {
-                $datos_evento = substr($datos_evento, -9); // Omitir el primer dígito
-            }
-            $query->where('No_Empleado', str_pad($datos_evento, 7, '0', STR_PAD_LEFT))
-                ->orWhere('No_TAG', $datos_evento);
-        })
-        ->where('Status_Emp', 'A')
-        ->first();
+        // Cache para empleados especiales
+        $specialEmployees = Cache::remember('special_employees', 3600, function () {
+            Log::info('Cacheando datos de empleados especiales');
+            return [
+                '5742' => [
+                    'no_empleados' => '0005742',
+                    'No_Tag' => '180839466',
+                    'nombre_empleado' => 'JAVIER GONZALEZ QUINTANILLA',
+                    'Departamento' => 'Departamento por defecto',
+                    'Puesto' => 'Puesto por defecto',
+                    'Planta' => 'Intimark1',
+                ],
+                '19496' => [
+                    'no_empleados' => '0019496',
+                    'No_Tag' => '068041063',
+                    'nombre_empleado' => 'MARCOS ADISSI MICHA',
+                    'Departamento' => 'DIRECCION',
+                    'Puesto' => 'GERENTE GENERAL',
+                    'Planta' => 'Intimark1',
+                ],
+                '700001' => [
+                    'no_empleados' => '0700001',
+                    'No_Tag' => '409982989',
+                    'nombre_empleado' => 'EDUARDO ADISSI COHEN',
+                    'Departamento' => 'DIRECCION',
+                    'Puesto' => 'GERENTE GENERAL',
+                    'Planta' => 'Intimark1',
+                ],
+                '18405' => [
+                    'no_empleados' => '0018405',
+                    'No_Tag' => '425714461',
+                    'nombre_empleado' => 'NICOLAS ALBERTO ARANGO',
+                    'Departamento' => 'DIRECCION',
+                    'Puesto' => 'GERENTE GENERAL',
+                    'Planta' => 'Intimark1',
+                ],
+            ];
+        });
 
-        //Lienciado javier
-        if($datos_evento == '5742')
-        {
-            // Verifica si ya existe un registro en RegistroSimulacro
-            if (RegistroSimulacro::where('no_empleados', '0005742')
-                ->whereBetween('created_at', [$inicioMes, $finMes])
-                ->exists()) {
+        // Verificar si es un empleado especial
+        if (
+            isset($specialEmployees[$datos_evento]) ||
+            in_array($datos_evento, array_column($specialEmployees, 'No_Tag'))
+        ) {
 
+            Log::info("Procesando empleado especial: $datos_evento");
+
+            // Encontrar empleado especial por No_Tag si es necesario
+            $specialEmployee = $specialEmployees[$datos_evento] ??
+                current(array_filter($specialEmployees, fn($emp) => $emp['No_Tag'] === $datos_evento));
+
+            // Verificar registro existente usando cache
+            $registroExistente = Cache::remember(
+                "registro_simulacro_{$specialEmployee['no_empleados']}_{$inicioMes->format('Y-m')}",
+                300,
+                function () use ($specialEmployee, $inicioMes, $finMes) {
+                    Log::info("Verificando registro existente para: {$specialEmployee['nombre_empleado']}");
+                    return RegistroSimulacro::where('no_empleados', $specialEmployee['no_empleados'])
+                        ->whereBetween('created_at', [$inicioMes, $finMes])
+                        ->exists();
+                }
+            );
+
+            if ($registroExistente) {
+                Log::info("Empleado especial ya registrado: {$specialEmployee['nombre_empleado']}");
                 return response()->json([
                     'success' => false,
-                    'message' => 'JAVIER GONZALEZ QUINTANILLA ya está registrado',
-                    'tipo' => 'warning' // Cambiar el color a naranja
+                    'message' => "{$specialEmployee['nombre_empleado']} ya está registrado",
+                    'tipo' => 'warning'
                 ]);
             }
 
-            RegistroSimulacro::create([
-                'id_evento' => 5,
-                'no_empleados' => '0005742',
-                'No_Tag' => '180839466',
-                'nombre_empleado' => 'JAVIER GONZALEZ QUINTANILLA',
-                'Departamento' =>  'Departamento por defecto',
-                'Puesto' => 'Puesto por defecto',
-                'Planta' => 'Intimark1',
-            ]);
+            // Crear registro para empleado especial
+            RegistroSimulacro::create(array_merge(['id_evento' => 5], $specialEmployee));
+
+            Log::info("Registro exitoso para empleado especial: {$specialEmployee['nombre_empleado']}");
+            Cache::forget("registro_simulacro_{$specialEmployee['no_empleados']}_{$inicioMes->format('Y-m')}");
+
             return response()->json([
                 'success' => true,
                 'message' => 'Registro correcto',
-                'nombre_empleado' => 'JAVIER GONZALEZ QUINTANILLA',
+                'nombre_empleado' => $specialEmployee['nombre_empleado'],
             ]);
         }
 
-        //señor marcos
-        if($datos_evento == '19496' || $datos_evento == '068041063')
-        {
-            // Verifica si ya existe un registro en RegistroSimulacro
-            if (RegistroSimulacro::where('no_empleados', '0019496')
-                ->whereBetween('created_at', [$inicioMes, $finMes])
-                ->exists()) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'MARCOS ADISSI MICHA ya está registrado',
-                    'tipo' => 'warning' // Cambiar el color a naranja
-                ]);
-            }
-
-            RegistroSimulacro::create([
-                'id_evento' => 5,
-                'no_empleados' => '0019496',
-                'No_Tag' => '068041063',
-                'nombre_empleado' => 'MARCOS ADISSI MICHA',
-                'Departamento' =>  'DIRECCION',
-                'Puesto' => 'GERENTE GENERAL',
-                'Planta' => 'Intimark1',
-            ]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Registro correcto',
-                'nombre_empleado' => 'MARCOS ADISSI MICHA',
-            ]);
-        }
-
-        //señor Eduardo <dueño>
-        if($datos_evento == '700001' || $datos_evento == '409982989')
-        {
-            // Verifica si ya existe un registro en RegistroSimulacro
-            if (RegistroSimulacro::where('no_empleados', '0700001')
-                ->whereBetween('created_at', [$inicioMes, $finMes])
-                ->exists()) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'EDUARDO ADISSI COHEN ya está registrado',
-                    'tipo' => 'warning' // Cambiar el color a naranja
-                ]);
-            }
-
-            RegistroSimulacro::create([
-                'id_evento' => 5,
-                'no_empleados' => '0700001',
-                'No_Tag' => '409982989',
-                'nombre_empleado' => 'EDUARDO ADISSI COHEN',
-                'Departamento' =>  'DIRECCION',
-                'Puesto' => 'GERENTE GENERAL',
-                'Planta' => 'Intimark1',
-            ]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Registro correcto',
-                'nombre_empleado' => 'EDUARDO ADISSI COHEN',
-            ]);
-        }
-
-
-        // señor nicolas
-        if($datos_evento == '18405' || $datos_evento == '425714461')
-        {
-            // Verifica si ya existe un registro en RegistroSimulacro
-            if (RegistroSimulacro::where('no_empleados', '0018405')
-                ->whereBetween('created_at', [$inicioMes, $finMes])
-                ->exists()) {
-
-                return response()->json([
-                    'success' => false,
-                    'message' => 'NICOLAS ALBERTO ARANGO ya está registrado',
-                    'tipo' => 'warning' // Cambiar el color a naranja
-                ]);
-            }
-
-            RegistroSimulacro::create([
-                'id_evento' => 5,
-                'no_empleados' => '0018405',
-                'No_Tag' => '425714461',
-                'nombre_empleado' => 'NICOLAS ALBERTO ARANGO',
-                'Departamento' =>  'DIRECCION',
-                'Puesto' => 'GERENTE GENERAL',
-                'Planta' => 'Intimark1',
-            ]);
-            return response()->json([
-                'success' => true,
-                'message' => 'Registro correcto',
-                'nombre_empleado' => 'NICOLAS ALBERTO ARANGO',
-            ]);
-        }
-
+        // Buscar empleado regular en cache
+        $empleadoCacheKey = "empleado_" . md5($datos_evento);
+        $AsistenciaE = Cache::remember($empleadoCacheKey, 3600, function () use ($datos_evento) {
+            Log::info("Buscando empleado en base de datos: $datos_evento");
+            return Tbl_Empleado_SIA::where(function ($query) use ($datos_evento) {
+                if (strlen($datos_evento) == 10) {
+                    $datos_evento = substr($datos_evento, -9);
+                }
+                $query->where('No_Empleado', str_pad($datos_evento, 7, '0', STR_PAD_LEFT))
+                    ->orWhere('No_TAG', $datos_evento);
+            })
+                ->where('Status_Emp', 'A')
+                ->first();
+        });
 
         if (!$AsistenciaE) {
+            Log::info("Empleado no encontrado: $datos_evento");
             return response()->json([
                 'success' => false,
                 'message' => 'Empleado no encontrado'
             ]);
         }
 
-        // Verifica si ya existe un registro en RegistroSimulacro
-        if (RegistroSimulacro::where('no_empleados', $AsistenciaE->No_Empleado)
-            ->whereBetween('created_at', [$inicioMes, $finMes])
-            ->exists()) {
+        // Verificar registro existente
+        $registroExistenteCacheKey = "registro_simulacro_{$AsistenciaE->No_Empleado}_{$inicioMes->format('Y-m')}";
+        $registroExistente = Cache::remember($registroExistenteCacheKey, 300, function () use ($AsistenciaE, $inicioMes, $finMes) {
+            Log::info("Verificando registro existente para: {$AsistenciaE->No_Empleado}");
+            return RegistroSimulacro::where('no_empleados', $AsistenciaE->No_Empleado)
+                ->whereBetween('created_at', [$inicioMes, $finMes])
+                ->exists();
+        });
 
+        if ($registroExistente) {
+            Log::info("Empleado ya registrado: {$AsistenciaE->No_Empleado}");
             return response()->json([
                 'success' => false,
                 'message' => $AsistenciaE->Nom_Emp . ' ' . $AsistenciaE->Ap_Pat . ' ' . $AsistenciaE->Ap_Mat . ' ya está registrado',
-                'tipo' => 'warning' // Cambiar el color a naranja
+                'tipo' => 'warning'
             ]);
         }
 
-        RegistroSimulacro::create([
+        // Crear nuevo registro
+        if ($registro = RegistroSimulacro::create([
             'id_evento' => 5,
             'no_empleados' => $AsistenciaE->No_Empleado,
             'No_Tag' => $AsistenciaE->No_TAG,
@@ -190,7 +163,12 @@ class SimulacroController extends Controller
             'Departamento' => $AsistenciaE->departamentoRelacionado->Departamento ?? 'Departamento por defecto',
             'Puesto' => $AsistenciaE->puestoRelacionado->Puesto ?? 'Puesto por defecto',
             'Planta' => $AsistenciaE->Id_Planta,
-        ]);
+        ])) {
+            $this->incrementarConteo($registro->Planta);
+        }
+
+        Log::info("Registro exitoso para: {$AsistenciaE->No_Empleado}");
+        Cache::forget($registroExistenteCacheKey);
 
         return response()->json([
             'success' => true,
@@ -205,55 +183,90 @@ class SimulacroController extends Controller
         return response()->json($this->obtenerConteos());
     }
 
+    private $conteosTemporal = [];
+
     private function obtenerConteos()
     {
         $cacheKey = 'conteos_simulacro_mes_actual';
-        $lockKey = 'lock_' . $cacheKey;
+        $mesActual = Carbon::now()->format('Y-m');
 
-        // Si ya está cacheado, lo usamos
+        // Intentar obtener del array temporal primero
+        if (isset($this->conteosTemporal[$mesActual])) {
+            Log::info('[MEMORY HIT] Usando conteo desde memoria temporal');
+            return $this->conteosTemporal[$mesActual];
+        }
+
+        // Intentar obtener del caché
         if (Cache::has($cacheKey)) {
-            Log::info('[CACHE HIT] Conteo leído desde cache.');
-            return Cache::get($cacheKey);
+            Log::info('[CACHE HIT] Usando conteo desde caché');
+            $this->conteosTemporal[$mesActual] = Cache::get($cacheKey);
+            return $this->conteosTemporal[$mesActual];
         }
 
-        // Verificamos si hay otro proceso construyendo el cache
-        if (Cache::has($lockKey)) {
-            Log::info('[CACHE BUSY] Otro proceso está construyendo el cache. Esperando...');
+        Log::info('[CACHE MISS] Generando nuevo conteo desde DB');
 
-            // Esperamos un poco y luego usamos lo que haya
-            usleep(500000); // 500 ms
-            return Cache::get($cacheKey) ?? [
-                'ConteoRegistroIxtlahuaca' => 0,
-                'ConteoRegistroSanBartolo' => 0,
-                'ConteoRegistros' => 0,
-            ];
-        }
+        // Si no hay caché, realizar conteo inicial
+        $conteos = $this->realizarConteoInicial();
 
-        // Marcamos que estamos construyendo el cache
-        Cache::put($lockKey, true, 3); // lock temporal de 3 segundos
+        // Guardar en caché y en memoria temporal
+        $this->actualizarConteos($conteos);
 
-        Log::info('[CACHE MISS] Generando nuevo conteo desde DB.');
+        return $conteos;
+    }
 
+    private function realizarConteoInicial()
+    {
         $inicioMes = Carbon::now()->startOfMonth();
         $finMes = Carbon::now()->endOfMonth();
 
-        $conteos = RegistroSimulacro::whereIn('Planta', ['Intimark1', 'Intimark2'])
+        Log::info('Realizando conteo inicial desde base de datos');
+
+        $resultados = RegistroSimulacro::whereIn('Planta', ['Intimark1', 'Intimark2'])
             ->whereBetween('created_at', [$inicioMes, $finMes])
             ->groupBy('Planta')
             ->selectRaw('Planta, count(*) as total')
             ->get()
             ->keyBy('Planta');
 
-        $ConteoRegistroIxtlahuaca = $conteos['Intimark1']->total ?? 0;
-        $ConteoRegistroSanBartolo = $conteos['Intimark2']->total ?? 0;
-        $ConteoRegistros = $ConteoRegistroIxtlahuaca + $ConteoRegistroSanBartolo;
-
-        $data = compact('ConteoRegistroIxtlahuaca', 'ConteoRegistroSanBartolo', 'ConteoRegistros');
-
-        Cache::put($cacheKey, $data, 6); // guardamos por 6 segundos
-        Cache::forget($lockKey); // liberamos "pseudo-lock"
-
-        return $data;
+        return [
+            'ConteoRegistroIxtlahuaca' => $resultados['Intimark1']->total ?? 0,
+            'ConteoRegistroSanBartolo' => $resultados['Intimark2']->total ?? 0,
+            'ConteoRegistros' => ($resultados['Intimark1']->total ?? 0) + ($resultados['Intimark2']->total ?? 0),
+            'ultima_actualizacion' => now()->timestamp
+        ];
     }
 
+    private function actualizarConteos($conteos)
+    {
+        $mesActual = Carbon::now()->format('Y-m');
+        $cacheKey = 'conteos_simulacro_mes_actual';
+
+        $this->conteosTemporal[$mesActual] = $conteos;
+
+        // Versión para pruebas (1 minuto)
+        Cache::put($cacheKey, $conteos, now()->addMinute());
+
+        // Versión para producción (hasta fin del día)
+        // Cache::put($cacheKey, $conteos, now()->endOfDay());
+
+        Log::info('Conteos actualizados en caché y memoria temporal');
+    }
+
+    public function incrementarConteo($planta)
+    {
+        $cacheKey = 'conteos_simulacro_mes_actual';
+        $conteos = Cache::get($cacheKey) ?? $this->realizarConteoInicial();
+
+        if ($planta === 'Intimark1') {
+            $conteos['ConteoRegistroIxtlahuaca']++;
+        } elseif ($planta === 'Intimark2') {
+            $conteos['ConteoRegistroSanBartolo']++;
+        }
+
+        $conteos['ConteoRegistros']++;
+        $conteos['ultima_actualizacion'] = now()->timestamp;
+
+        $this->actualizarConteos($conteos);
+        Log::info("Conteo incrementado para planta: $planta");
+    }
 }

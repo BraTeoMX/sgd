@@ -10,6 +10,10 @@ use Krlove\EloquentModelGenerator\Config;
 use Krlove\EloquentModelGenerator\Helper\EmgHelper;
 use Krlove\EloquentModelGenerator\Model\EloquentModel;
 
+/**
+ * Class TableNameProcessor
+ * @package Krlove\EloquentModelGenerator\Processor
+ */
 class TableNameProcessor implements ProcessorInterface
 {
     /**
@@ -18,6 +22,7 @@ class TableNameProcessor implements ProcessorInterface
     protected $helper;
 
     /**
+     * TableNameProcessor constructor.
      * @param EmgHelper $helper
      */
     public function __construct(EmgHelper $helper)
@@ -25,6 +30,9 @@ class TableNameProcessor implements ProcessorInterface
         $this->helper = $helper;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function process(EloquentModel $model, Config $config)
     {
         $className     = $config->get('class_name');
@@ -42,6 +50,9 @@ class TableNameProcessor implements ProcessorInterface
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPriority()
     {
         return 10;

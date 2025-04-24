@@ -6,6 +6,10 @@ use Krlove\EloquentModelGenerator\Exception\GeneratorException;
 use Krlove\EloquentModelGenerator\Model\EloquentModel;
 use Krlove\EloquentModelGenerator\Processor\ProcessorInterface;
 
+/**
+ * Class EloquentModelBuilder
+ * @package Krlove\EloquentModelGenerator
+ */
 class EloquentModelBuilder
 {
     /**
@@ -14,6 +18,7 @@ class EloquentModelBuilder
     protected $processors;
 
     /**
+     * EloquentModelBuilder constructor.
      * @param ProcessorInterface[]|\IteratorAggregate $processors
      */
     public function __construct($processors)

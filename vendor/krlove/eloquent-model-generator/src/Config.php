@@ -2,6 +2,10 @@
 
 namespace Krlove\EloquentModelGenerator;
 
+/**
+ * Class Config
+ * @package Krlove\EloquentModelGenerator
+ */
 class Config
 {
     /**
@@ -10,6 +14,7 @@ class Config
     protected $config;
 
     /**
+     * Config constructor.
      * @param array $inputConfig
      * @param array|null $appConfig
      */

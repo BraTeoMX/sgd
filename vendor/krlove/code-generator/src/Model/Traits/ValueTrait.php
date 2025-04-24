@@ -55,7 +55,6 @@ trait ValueTrait
 
                 break;
             case 'int':
-            case 'integer':
                 // do nothing
 
                 break;

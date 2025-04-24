@@ -9,8 +9,6 @@ use Illuminate\Support\Collection;
 use InvalidArgumentException;
 use Maatwebsite\Excel\Exceptions\NoFilePathGivenException;
 use Maatwebsite\Excel\Importer;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 trait Importable
@@ -21,12 +19,12 @@ trait Importable
     protected $output;
 
     /**
-     * @param  string|UploadedFile|null  $filePath
-     * @param  string|null  $disk
-     * @param  string|null  $readerType
-     * @return Importer|PendingDispatch
+     * @param string|UploadedFile|null $filePath
+     * @param string|null              $disk
+     * @param string|null              $readerType
      *
      * @throws NoFilePathGivenException
+     * @return Importer|PendingDispatch
      */
     public function import($filePath = null, string $disk = null, string $readerType = null)
     {
@@ -41,12 +39,12 @@ trait Importable
     }
 
     /**
-     * @param  string|UploadedFile|null  $filePath
-     * @param  string|null  $disk
-     * @param  string|null  $readerType
-     * @return array
+     * @param string|UploadedFile|null $filePath
+     * @param string|null              $disk
+     * @param string|null              $readerType
      *
      * @throws NoFilePathGivenException
+     * @return array
      */
     public function toArray($filePath = null, string $disk = null, string $readerType = null): array
     {
@@ -61,12 +59,12 @@ trait Importable
     }
 
     /**
-     * @param  string|UploadedFile|null  $filePath
-     * @param  string|null  $disk
-     * @param  string|null  $readerType
-     * @return Collection
+     * @param string|UploadedFile|null $filePath
+     * @param string|null              $disk
+     * @param string|null              $readerType
      *
      * @throws NoFilePathGivenException
+     * @return Collection
      */
     public function toCollection($filePath = null, string $disk = null, string $readerType = null): Collection
     {
@@ -81,13 +79,13 @@ trait Importable
     }
 
     /**
-     * @param  string|UploadedFile|null  $filePath
-     * @param  string|null  $disk
-     * @param  string|null  $readerType
-     * @return PendingDispatch
+     * @param string|UploadedFile|null $filePath
+     * @param string|null              $disk
+     * @param string|null              $readerType
      *
      * @throws NoFilePathGivenException
      * @throws InvalidArgumentException
+     * @return PendingDispatch
      */
     public function queue($filePath = null, string $disk = null, string $readerType = null)
     {
@@ -99,7 +97,8 @@ trait Importable
     }
 
     /**
-     * @param  OutputStyle  $output
+     * @param OutputStyle $output
+     *
      * @return $this
      */
     public function withOutput(OutputStyle $output)
@@ -115,17 +114,19 @@ trait Importable
     public function getConsoleOutput(): OutputStyle
     {
         if (!$this->output instanceof OutputStyle) {
-            $this->output = new OutputStyle(new StringInput(''), new NullOutput());
+            throw new InvalidArgumentException(
+                'Importable has no OutputStyle. Declare one by using ->withOutput($this->output).'
+            );
         }
 
         return $this->output;
     }
 
     /**
-     * @param  UploadedFile|string|null  $filePath
-     * @return UploadedFile|string
+     * @param UploadedFile|string|null $filePath
      *
      * @throws NoFilePathGivenException
+     * @return UploadedFile|string
      */
     private function getFilePath($filePath = null)
     {

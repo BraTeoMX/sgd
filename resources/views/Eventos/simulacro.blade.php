@@ -1,31 +1,31 @@
 @extends('layouts.main')
 
 @section('content')
-    @if(session('error'))
+    @if (session('error'))
         <div class="alert alert-danger custom-alert">
             {{ session('error') }}
         </div>
     @endif
-    @if(session('success'))
+    @if (session('success'))
         <div class="alert alert-success custom-alert">
             {{ session('success') }}
-            @if(session('nombre'))
+            @if (session('nombre'))
                 <br>{{ session('nombre') }}
             @endif
         </div>
     @endif
-    @if(session('duplicado'))
+    @if (session('duplicado'))
         <div class="alert alert-warning custom-alert">
             {{ session('duplicado') }}
-            @if(session('nombre'))
+            @if (session('nombre'))
                 <br>{{ session('nombre') }}
             @endif
         </div>
     @endif
-    @if(session('no_puesto'))
+    @if (session('no_puesto'))
         <div class="alert alert-info custom-alert">
             {{ session('no_puesto') }}
-            @if(session('nombre'))
+            @if (session('nombre'))
                 <br>{{ session('nombre') }}
             @endif
         </div>
@@ -37,16 +37,25 @@
         <hr>
         <style>
             .custom-alert {
-                font-size: 20px; /* Aumenta el tamaño del texto */
-                padding: 30px; /* Aumenta el padding */
-                margin-top: 20px; /* Margen superior */
-                border-radius: 10px; /* Esquinas redondeadas */
+                font-size: 20px;
+                /* Aumenta el tamaño del texto */
+                padding: 30px;
+                /* Aumenta el padding */
+                margin-top: 20px;
+                /* Margen superior */
+                border-radius: 10px;
+                /* Esquinas redondeadas */
             }
+
             .custom-alert-wan {
-                font-size: 20px; /* Tamaño del texto */
-                padding: 20px; /* Espacio interno */
-                margin-top: 20px; /* Espacio externo superior */
-                border-radius: 10px; /* Esquinas redondeadas */
+                font-size: 20px;
+                /* Tamaño del texto */
+                padding: 20px;
+                /* Espacio interno */
+                margin-top: 20px;
+                /* Espacio externo superior */
+                border-radius: 10px;
+                /* Esquinas redondeadas */
             }
         </style>
         <div id="messageDiv" class="custom-alert-wan" style="display: none;"></div>
@@ -57,7 +66,8 @@
                     @csrf
                     <div class="form-group" id="textboxDiv">
                         <label for="datos_evento">Registra tu tag o número de empleado:</label>
-                        <input type="text" name="datos_evento" id="datos_evento" class="form-control" value="{{ old('datos_evento') }}" inputmode="numeric">
+                        <input type="text" name="datos_evento" id="datos_evento" class="form-control"
+                            value="{{ old('datos_evento') }}" inputmode="numeric">
                     </div>
                     <div class="d-flex justify-content-between">
                         <div>
@@ -96,79 +106,129 @@
         </div>
     </div>
 
+    {{-- Mover los estilos a un archivo CSS separado --}}
+    <link rel="stylesheet" href="{{ asset('css/simulacro.css') }}">
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // Establecer el foco en el input al cargar la página
-            $('#datos_evento').focus();
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
 
-            function enviarDatos() {
-                $.ajax({
-                    type: 'POST',
-                    url: '{{ route("eventos.registroSimulacro") }}',
-                    data: $('#registroForm').serialize(),
-                    success: function(response) {
-                        $('#messageDiv').removeClass().empty();
-                        if (response.success) {
-                            $('#messageDiv').addClass('alert alert-success custom-alert-wan').text(response.message + ': ' + response.nombre_empleado);
-                        } else {
-                            if (response.tipo === 'info') {
-                                $('#messageDiv').addClass('alert alert-info custom-alert-wan').text(response.message);
-                            } else if (response.tipo === 'warning') {
-                                $('#messageDiv').addClass('alert alert-warning custom-alert-wan').text(response.message);
-                            } else {
-                                $('#messageDiv').addClass('alert alert-danger custom-alert-wan').text(response.message);
-                            }
-                        }
-                        $('#messageDiv').fadeIn();
-                    },
-                    error: function(xhr, status, error) {
-                        $('#messageDiv').removeClass().empty();
-                        $('#messageDiv').addClass('alert alert-danger custom-alert-wan').text('Error al procesar la solicitud. Inténtalo de nuevo más tarde.');
-                        $('#messageDiv').fadeIn();
-                    },
-                    complete: function() {
-                        $('#datos_evento').val(''); // Limpiar el valor del input
-                        $('#datos_evento').focus(); // Enfocar el input de nuevo
+    <script type="module">
+        // Módulo principal para el manejo del simulacro
+        const SimulacroManager = {
+            messageDiv: null,
+            inputField: null,
+            form: null,
+            counters: {},
+
+            async init() {
+                this.messageDiv = document.getElementById('messageDiv');
+                this.inputField = document.getElementById('datos_evento');
+                this.form = document.getElementById('registroForm');
+                this.counters = {
+                    ixtlahuaca: document.getElementById('conteo-ixtlahuaca'),
+                    sanbartolo: document.getElementById('conteo-sanbartolo'),
+                    total: document.getElementById('conteo-total')
+                };
+
+                this.setupEventListeners();
+                this.startCounterUpdates();
+            },
+
+            setupEventListeners() {
+                // Debounce para el input
+                let timeout;
+                this.inputField.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        clearTimeout(timeout);
+                        this.enviarDatos();
                     }
                 });
+
+                document.getElementById('registrarBtn').addEventListener('click', () => this.enviarDatos());
+            },
+
+            async enviarDatos() {
+                try {
+                    const formData = new FormData(this.form);
+                    const response = await fetch('{{ route('eventos.registroSimulacro') }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(Object.fromEntries(formData))
+                    });
+
+                    const data = await response.json();
+                    this.showMessage(data);
+                    this.actualizarConteos();
+                } catch (error) {
+                    console.error('Error:', error);
+                    this.showMessage({
+                        success: false,
+                        message: 'Error al procesar la solicitud. Inténtalo de nuevo más tarde.'
+                    });
+                } finally {
+                    this.inputField.value = '';
+                    this.inputField.focus();
+                }
+            },
+
+            showMessage(data) {
+                this.messageDiv.className = '';
+                const baseClass = 'alert custom-alert-wan ';
+                const messageType = data.success ? 'success' : (data.tipo || 'danger');
+
+                this.messageDiv.className = baseClass + 'alert-' + messageType;
+                this.messageDiv.textContent = data.success ?
+                    `${data.message}: ${data.nombre_empleado}` :
+                    data.message;
+
+                this.messageDiv.style.display = 'block';
+                setTimeout(() => this.messageDiv.style.display = 'none', 5000);
+            },
+
+            async actualizarConteos() {
+                try {
+                    const response = await fetch('{{ route('eventos.obtenerConteosAjax') }}');
+                    const data = await response.json();
+
+                    // Actualizar contadores solo si han cambiado
+                    if (this.counters.ixtlahuaca.textContent !== data.ConteoRegistroIxtlahuaca.toString()) {
+                        this.counters.ixtlahuaca.textContent = data.ConteoRegistroIxtlahuaca;
+                    }
+                    if (this.counters.sanbartolo.textContent !== data.ConteoRegistroSanBartolo.toString()) {
+                        this.counters.sanbartolo.textContent = data.ConteoRegistroSanBartolo;
+                    }
+                    if (this.counters.total.textContent !== data.ConteoRegistros.toString()) {
+                        this.counters.total.textContent = data.ConteoRegistros;
+                    }
+                } catch (error) {
+                    console.error('Error al actualizar conteos:', error);
+                }
+            },
+
+            startCounterUpdates() {
+                // Usar RequestAnimationFrame para optimizar las actualizaciones
+                let lastUpdate = 0;
+                const updateInterval = 5000; // 5 segundos
+
+                const update = (timestamp) => {
+                    if (timestamp - lastUpdate >= updateInterval) {
+                        this.actualizarConteos();
+                        lastUpdate = timestamp;
+                    }
+                    requestAnimationFrame(update);
+                };
+
+                requestAnimationFrame(update);
             }
+        };
 
-            $('#datos_evento').keydown(function(event) {
-                if (event.keyCode === 13) {
-                    event.preventDefault(); // Evitar el comportamiento por defecto de la tecla Enter
-                    enviarDatos(); // Llamar a la función para enviar datos
-                }
-            });
-
-            $('#registrarBtn').click(function() {
-                enviarDatos(); // Llamar a la función para enviar datos
-            });
-        });
-    </script>
-
-    <script>
-        function actualizarConteos() {
-            $.ajax({
-                url: '{{ route("eventos.obtenerConteosAjax") }}',
-                type: 'GET',
-                dataType: 'json',
-                success: function(data) {
-                    $('#conteo-ixtlahuaca').text(data.ConteoRegistroIxtlahuaca);
-                    $('#conteo-sanbartolo').text(data.ConteoRegistroSanBartolo);
-                    $('#conteo-total').text(data.ConteoRegistros);
-                },
-                error: function(xhr, status, error) {
-                    console.error("Error al actualizar conteos:", error);
-                }
-            });
-        }
-
-        // Actualizar los conteos cada 5 segundos (ajusta este valor según tus necesidades)
-        setInterval(actualizarConteos, 5000);
+        // Iniciar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => SimulacroManager.init());
     </script>
 @endsection
 @section('scriptBFile')
-
 @endsection

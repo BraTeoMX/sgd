@@ -3,7 +3,7 @@
 namespace Jenssegers\Optimus\Exceptions;
 
 use Exception;
-use phpseclib3\Math\BigInteger;
+use phpseclib\Math\BigInteger;
 use RangeException;
 
 class InvalidPrimeException extends RangeException

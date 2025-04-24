@@ -4,6 +4,10 @@ namespace Krlove\EloquentModelGenerator\Helper;
 
 use Illuminate\Support\Str;
 
+/**
+ * Class EmgHelper
+ * @package Krlove\EloquentModelGenerator\Helper
+ */
 class EmgHelper
 {
     /**

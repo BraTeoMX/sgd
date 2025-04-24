@@ -79,7 +79,7 @@ class RedisSessionHandler extends AbstractSessionHandler
      */
     protected function doWrite(string $sessionId, string $data): bool
     {
-        $result = $this->redis->setEx($this->prefix.$sessionId, (int) ($this->ttl ?? \ini_get('session.gc_maxlifetime')), $data);
+        $result = $this->redis->setEx($this->prefix.$sessionId, (int) ($this->ttl ?? ini_get('session.gc_maxlifetime')), $data);
 
         return $result && !$result instanceof ErrorInterface;
     }
@@ -93,15 +93,15 @@ class RedisSessionHandler extends AbstractSessionHandler
 
         if ($unlink) {
             try {
-                $unlink = false !== $this->redis->unlink($this->prefix.$sessionId);
+                $this->redis->unlink($this->prefix.$sessionId);
+
+                return true;
             } catch (\Throwable $e) {
                 $unlink = false;
             }
         }
 
-        if (!$unlink) {
-            $this->redis->del($this->prefix.$sessionId);
-        }
+        $this->redis->del($this->prefix.$sessionId);
 
         return true;
     }
@@ -109,7 +109,6 @@ class RedisSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    #[\ReturnTypeWillChange]
     public function close(): bool
     {
         return true;
@@ -117,21 +116,17 @@ class RedisSessionHandler extends AbstractSessionHandler
 
     /**
      * {@inheritdoc}
-     *
-     * @return int|false
      */
-    #[\ReturnTypeWillChange]
-    public function gc($maxlifetime)
+    public function gc($maxlifetime): bool
     {
-        return 0;
+        return true;
     }
 
     /**
      * @return bool
      */
-    #[\ReturnTypeWillChange]
     public function updateTimestamp($sessionId, $data)
     {
-        return (bool) $this->redis->expire($this->prefix.$sessionId, (int) ($this->ttl ?? \ini_get('session.gc_maxlifetime')));
+        return (bool) $this->redis->expire($this->prefix.$sessionId, (int) ($this->ttl ?? ini_get('session.gc_maxlifetime')));
     }
 }

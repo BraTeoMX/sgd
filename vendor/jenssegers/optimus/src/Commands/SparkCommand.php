@@ -95,7 +95,5 @@ class SparkCommand extends Command
                 );
                 break;
         }
-        
-        return 0;
     }
 }

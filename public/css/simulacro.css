@@ -1,0 +1,13 @@
+.custom-alert {
+    font-size: 20px;
+    padding: 30px;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+.custom-alert-wan {
+    font-size: 20px;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+}

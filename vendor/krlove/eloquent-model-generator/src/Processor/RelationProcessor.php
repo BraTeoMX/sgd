@@ -22,6 +22,10 @@ use Krlove\EloquentModelGenerator\Model\HasMany;
 use Krlove\EloquentModelGenerator\Model\HasOne;
 use Krlove\EloquentModelGenerator\Model\Relation;
 
+/**
+ * Class RelationProcessor
+ * @package Krlove\EloquentModelGenerator\Processor
+ */
 class RelationProcessor implements ProcessorInterface
 {
     /**
@@ -35,6 +39,7 @@ class RelationProcessor implements ProcessorInterface
     protected $helper;
 
     /**
+     * FieldProcessor constructor.
      * @param DatabaseManager $databaseManager
      * @param EmgHelper $helper
      */
@@ -44,6 +49,9 @@ class RelationProcessor implements ProcessorInterface
         $this->helper = $helper;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function process(EloquentModel $model, Config $config)
     {
         $schemaManager = $this->databaseManager->connection($config->get('connection'))->getDoctrineSchemaManager();
@@ -111,6 +119,9 @@ class RelationProcessor implements ProcessorInterface
         }
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getPriority()
     {
         return 5;

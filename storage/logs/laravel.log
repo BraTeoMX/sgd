@@ -1,0 +1,96 @@
+[2025-04-24 16:15:08] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:08] local.ERROR: Trait 'Laravel\Sanctum\HasApiTokens' not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait 'Laravel\\Sanctum\\HasApiTokens' not found at C:\\xampp\\htdocs\\sgd\\app\\Models\\User.php:11)
+[stacktrace]
+#0 {main}
+"} 
+[2025-04-24 16:15:13] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:15] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:15] local.INFO: Cacheando datos de empleados especiales  
+[2025-04-24 16:15:15] local.INFO: Buscando empleado en base de datos: 23515  
+[2025-04-24 16:15:15] local.INFO: Verificando registro existente para: 0023515  
+[2025-04-24 16:15:15] local.INFO: Conteos actualizados en caché y memoria temporal  
+[2025-04-24 16:15:15] local.INFO: Conteo incrementado para planta: Intimark1  
+[2025-04-24 16:15:15] local.INFO: Registro exitoso para: 0023515  
+[2025-04-24 16:15:16] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:18] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:19] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:19] local.INFO: Verificando registro existente para: 0023515  
+[2025-04-24 16:15:19] local.INFO: Empleado ya registrado: 0023515  
+[2025-04-24 16:15:19] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:21] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:21] local.INFO: Empleado ya registrado: 0023515  
+[2025-04-24 16:15:21] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:23] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:23] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:23] local.INFO: Empleado ya registrado: 0023515  
+[2025-04-24 16:15:23] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:25] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:25] local.INFO: Buscando empleado en base de datos: 18080  
+[2025-04-24 16:15:25] local.INFO: Verificando registro existente para: 0018080  
+[2025-04-24 16:15:25] local.INFO: Conteos actualizados en caché y memoria temporal  
+[2025-04-24 16:15:25] local.INFO: Conteo incrementado para planta: Intimark1  
+[2025-04-24 16:15:25] local.INFO: Registro exitoso para: 0018080  
+[2025-04-24 16:15:26] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:28] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:28] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:28] local.INFO: Verificando registro existente para: 0018080  
+[2025-04-24 16:15:28] local.INFO: Empleado ya registrado: 0018080  
+[2025-04-24 16:15:28] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:31] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:31] local.INFO: Buscando empleado en base de datos: 23162  
+[2025-04-24 16:15:31] local.INFO: Verificando registro existente para: 0023162  
+[2025-04-24 16:15:32] local.INFO: Conteos actualizados en caché y memoria temporal  
+[2025-04-24 16:15:32] local.INFO: Conteo incrementado para planta: Intimark1  
+[2025-04-24 16:15:32] local.INFO: Registro exitoso para: 0023162  
+[2025-04-24 16:15:32] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:33] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:34] local.INFO: Iniciando proceso de registro de simulacro  
+[2025-04-24 16:15:34] local.INFO: Verificando registro existente para: 0023162  
+[2025-04-24 16:15:34] local.INFO: Empleado ya registrado: 0023162  
+[2025-04-24 16:15:34] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:38] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:43] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:48] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:53] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:15:58] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:16:03] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:16:08] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:16:10] local.ERROR: Trait 'Laravel\Sanctum\HasApiTokens' not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait 'Laravel\\Sanctum\\HasApiTokens' not found at C:\\xampp\\htdocs\\sgd\\app\\Models\\User.php:11)
+[stacktrace]
+#0 {main}
+"} 
+[2025-04-24 16:16:13] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:16:18] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:16:23] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:16:28] local.INFO: [CACHE HIT] Usando conteo desde caché  
+[2025-04-24 16:16:48] local.ERROR: Unable to prepare route [api/user] for serialization. Uses Closure. {"exception":"[object] (LogicException(code: 0): Unable to prepare route [api/user] for serialization. Uses Closure. at C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Route.php:1150)
+[stacktrace]
+#0 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\RouteCacheCommand.php(62): Illuminate\\Routing\\Route->prepareForSerialization()
+#1 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(36): Illuminate\\Foundation\\Console\\RouteCacheCommand->handle()
+#2 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Util.php(37): Illuminate\\Container\\BoundMethod::Illuminate\\Container\\{closure}()
+#3 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(93): Illuminate\\Container\\Util::unwrapIfClosure(Object(Closure))
+#4 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\BoundMethod.php(37): Illuminate\\Container\\BoundMethod::callBoundMethod(Object(Illuminate\\Foundation\\Application), Array, Object(Closure))
+#5 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Container\\Container.php(596): Illuminate\\Container\\BoundMethod::call(Object(Illuminate\\Foundation\\Application), Array, Array, NULL)
+#6 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(134): Illuminate\\Container\\Container->call(Array)
+#7 C:\\xampp\\htdocs\\sgd\\vendor\\symfony\\console\\Command\\Command.php(255): Illuminate\\Console\\Command->execute(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#8 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Command.php(121): Symfony\\Component\\Console\\Command\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Illuminate\\Console\\OutputStyle))
+#9 C:\\xampp\\htdocs\\sgd\\vendor\\symfony\\console\\Application.php(971): Illuminate\\Console\\Command->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#10 C:\\xampp\\htdocs\\sgd\\vendor\\symfony\\console\\Application.php(290): Symfony\\Component\\Console\\Application->doRunCommand(Object(Illuminate\\Foundation\\Console\\RouteCacheCommand), Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#11 C:\\xampp\\htdocs\\sgd\\vendor\\symfony\\console\\Application.php(166): Symfony\\Component\\Console\\Application->doRun(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#12 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Console\\Application.php(93): Symfony\\Component\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#13 C:\\xampp\\htdocs\\sgd\\vendor\\laravel\\framework\\src\\Illuminate\\Foundation\\Console\\Kernel.php(129): Illuminate\\Console\\Application->run(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#14 C:\\xampp\\htdocs\\sgd\\artisan(37): Illuminate\\Foundation\\Console\\Kernel->handle(Object(Symfony\\Component\\Console\\Input\\ArgvInput), Object(Symfony\\Component\\Console\\Output\\ConsoleOutput))
+#15 {main}
+"} 
+[2025-04-24 16:17:08] local.ERROR: Trait 'Laravel\Sanctum\HasApiTokens' not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait 'Laravel\\Sanctum\\HasApiTokens' not found at C:\\xampp\\htdocs\\sgd\\app\\Models\\User.php:11)
+[stacktrace]
+#0 {main}
+"} 
+[2025-04-24 16:18:08] local.ERROR: Trait 'Laravel\Sanctum\HasApiTokens' not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait 'Laravel\\Sanctum\\HasApiTokens' not found at C:\\xampp\\htdocs\\sgd\\app\\Models\\User.php:11)
+[stacktrace]
+#0 {main}
+"} 
+[2025-04-24 16:19:09] local.ERROR: Trait 'Laravel\Sanctum\HasApiTokens' not found {"exception":"[object] (Symfony\\Component\\ErrorHandler\\Error\\FatalError(code: 0): Trait 'Laravel\\Sanctum\\HasApiTokens' not found at C:\\xampp\\htdocs\\sgd\\app\\Models\\User.php:11)
+[stacktrace]
+#0 {main}
+"} 

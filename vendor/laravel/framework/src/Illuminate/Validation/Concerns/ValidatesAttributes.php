@@ -1170,11 +1170,7 @@ trait ValidatesAttributes
      */
     public function validateJson($attribute, $value)
     {
-        if (is_array($value)) {
-            return false;
-        }
-
-        if (! is_scalar($value) && ! is_null($value) && ! method_exists($value, '__toString')) {
+        if (! is_scalar($value) && ! method_exists($value, '__toString')) {
             return false;
         }
 
@@ -1220,10 +1216,6 @@ trait ValidatesAttributes
             return false;
         }
 
-        if (in_array('jpg', $parameters) || in_array('jpeg', $parameters)) {
-            $parameters = array_unique(array_merge($parameters, ['jpg', 'jpeg']));
-        }
-
         return $value->getPath() !== '' && in_array($value->guessExtension(), $parameters);
     }
 
@@ -1264,7 +1256,7 @@ trait ValidatesAttributes
         }
 
         $phpExtensions = [
-            'php', 'php3', 'php4', 'php5', 'phtml', 'phar',
+            'php', 'php3', 'php4', 'php5', 'phtml',
         ];
 
         return ($value instanceof UploadedFile)
@@ -1918,6 +1910,7 @@ trait ValidatesAttributes
      *
      * @param  string  $attribute
      * @param  string  $rule
+     *
      * @return void
      */
     protected function shouldBeNumeric($attribute, $rule)

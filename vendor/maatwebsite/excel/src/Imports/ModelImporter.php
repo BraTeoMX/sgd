@@ -2,12 +2,10 @@
 
 namespace Maatwebsite\Excel\Imports;
 
-use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
 use Maatwebsite\Excel\Concerns\WithCalculatedFormulas;
 use Maatwebsite\Excel\Concerns\WithColumnLimit;
-use Maatwebsite\Excel\Concerns\WithFormatData;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithProgressBar;
 use Maatwebsite\Excel\Concerns\WithValidation;
@@ -22,7 +20,7 @@ class ModelImporter
     private $manager;
 
     /**
-     * @param  ModelManager  $manager
+     * @param ModelManager $manager
      */
     public function __construct(ModelManager $manager)
     {
@@ -30,10 +28,10 @@ class ModelImporter
     }
 
     /**
-     * @param  Worksheet  $worksheet
-     * @param  ToModel  $import
-     * @param  int|null  $startRow
-     * @param  string|null  $endColumn
+     * @param Worksheet   $worksheet
+     * @param ToModel     $import
+     * @param int|null    $startRow
+     * @param string|null $endColumn
      *
      * @throws \Maatwebsite\Excel\Validators\ValidationException
      */
@@ -44,13 +42,11 @@ class ModelImporter
         }
 
         $headingRow       = HeadingRowExtractor::extract($worksheet, $import);
-        $headerIsGrouped  = HeadingRowExtractor::extractGrouping($headingRow, $import);
         $batchSize        = $import instanceof WithBatchInserts ? $import->batchSize() : 1;
         $endRow           = EndRowFinder::find($import, $startRow, $worksheet->getHighestRow());
         $progessBar       = $import instanceof WithProgressBar;
         $withMapping      = $import instanceof WithMapping;
         $withCalcFormulas = $import instanceof WithCalculatedFormulas;
-        $formatData       = $import instanceof WithFormatData;
         $withValidation   = $import instanceof WithValidation && method_exists($import, 'prepareForValidation');
         $endColumn        = $import instanceof WithColumnLimit ? $import->endColumn() : null;
 
@@ -60,31 +56,29 @@ class ModelImporter
         foreach ($worksheet->getRowIterator($startRow, $endRow) as $spreadSheetRow) {
             $i++;
 
-            $row = new Row($spreadSheetRow, $headingRow, $headerIsGrouped);
-            if (!$import instanceof SkipsEmptyRows || ($import instanceof SkipsEmptyRows && !$row->isEmpty($withCalcFormulas))) {
-                $rowArray = $row->toArray(null, $withCalcFormulas, $formatData, $endColumn);
+            $row      = new Row($spreadSheetRow, $headingRow);
+            $rowArray = $row->toArray(null, $withCalcFormulas, true, $endColumn);
 
-                if ($withValidation) {
-                    $rowArray = $import->prepareForValidation($rowArray, $row->getIndex());
-                }
+            if ($withValidation) {
+                $rowArray = $import->prepareForValidation($rowArray, $row->getIndex());
+            }
 
-                if ($withMapping) {
-                    $rowArray = $import->map($rowArray);
-                }
+            if ($withMapping) {
+                $rowArray = $import->map($rowArray);
+            }
 
-                $this->manager->add(
-                    $row->getIndex(),
-                    $rowArray
-                );
+            $this->manager->add(
+                $row->getIndex(),
+                $rowArray
+            );
 
-                // Flush each batch.
-                if (($i % $batchSize) === 0) {
-                    $this->manager->flush($import, $batchSize > 1);
-                    $i = 0;
+            // Flush each batch.
+            if (($i % $batchSize) === 0) {
+                $this->manager->flush($import, $batchSize > 1);
+                $i = 0;
 
-                    if ($progessBar) {
-                        $import->getConsoleOutput()->progressAdvance($batchSize);
-                    }
+                if ($progessBar) {
+                    $import->getConsoleOutput()->progressAdvance($batchSize);
                 }
             }
         }
